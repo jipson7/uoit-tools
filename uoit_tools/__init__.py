@@ -6,9 +6,7 @@ app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
 db = SQLAlchemy(app)
 
-from views import main
+from uoit_tools.views import main
 
 app.register_blueprint(main.main)
 
-if __name__=='__main__':
-    app.run()
