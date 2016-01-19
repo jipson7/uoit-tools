@@ -1,17 +1,14 @@
 import os
 from flask import Flask
+from flask.ext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
+db = SQLAlchemy(app)
 
-@app.route('/')
-def hello():
-    return 'Hello World!', 200
+from views import main
 
-@app.route('/env')
-def env_test():
-    return str(os.environ['APP_SETTINGS']), 200
-
+app.register_blueprint(main.main)
 
 if __name__=='__main__':
     app.run()

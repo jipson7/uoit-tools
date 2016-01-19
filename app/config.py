@@ -1,5 +1,6 @@
 
 class Config(object):
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
