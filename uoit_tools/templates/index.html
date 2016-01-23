@@ -18,8 +18,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.1/css/bootstrap-datepicker3.min.css" rel="stylesheet">
 
 
-    <!-- jQuery TimePicker -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.8.9/jquery.timepicker.min.css" rel="stylesheet">
+    <!-- Bootstrap TimePicker -->
+    <link href="https://cdn.jsdelivr.net/bootstrap.timepicker/0.2.6/css/bootstrap-timepicker.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="static/css/style.css" rel="stylesheet">
@@ -102,7 +102,23 @@
                 </div>
             </div>
             <div class="row">
-                Room Findr
+                <div class='col-sm-5'>
+                    <table id='roomfinder-table'>
+                        <tr>
+                            <td>Find a room on </td>
+                            <td><input type='text' id='roomfinder-date'></td>
+                        </tr>
+                        <tr>
+                            <td>From </td>
+                            <td><input type='text' id='roomfinder-start'></td>
+                        </tr>
+                        <tr>
+                            <td>To </td>
+                            <td><input type='text' id='roomfinder-end'></td>
+                        </tr>
+                    </table>
+                <div class='col-sm-7'>
+                </div>
             </div>
         </div>
     </section>
@@ -245,16 +261,22 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
 
-    <!-- jQuery TimePicker -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.8.9/jquery.timepicker.min.js"></script>
-
     <!-- Bootstrap Core JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!-- Bootstrap Datepicker-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.1/js/bootstrap-datepicker.min.js"></script>
+
+    <!-- Bootstrap TimePicker -->
+    <script src="https://cdn.jsdelivr.net/bootstrap.timepicker/0.2.6/js/bootstrap-timepicker.min.js"></script>
 
     <!-- Plugin JavaScript -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
     <script src="static/js/classie.js"></script>
     <script src="static/js/cbpAnimatedHeader.js"></script>
+
+    <!-- Room Finder JavaScript -->
+    <script src="static/js/roomfinder.js"></script>
 
     <!-- Contact Form JavaScript -->
     <script src="static/js/jqBootstrapValidation.js"></script>
