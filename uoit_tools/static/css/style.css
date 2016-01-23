@@ -333,3 +333,6 @@ footer .footer-below {
     outline: 0;
 }
 
+#roomfinder-table td {
+    padding: 5px;
+}
