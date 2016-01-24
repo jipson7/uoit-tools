@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from uoit_tools.models import Course, Day
 
 main = Blueprint('main', __name__)
@@ -7,10 +7,8 @@ main = Blueprint('main', __name__)
 def home_get():
     return render_template('index.html'), 200
 
-
-@main.route('/dbtest', methods=['GET'])
-def test_get():
-    test_course = Course.query.filter_by(code='3010U').first()
-    print(dir(test_course))
-    return test_course.code, 200
-
+@main.route('/roomfinder', methods=['GET'])
+def find_rooms():
+    find_date = request.args.get('date', None)
+    print(find_date)
+    return 'OK', 200
