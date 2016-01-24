@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request
 from uoit_tools.models import Course, Day
+from dateutil import parser as date_parser
 
 main = Blueprint('main', __name__)
 
@@ -9,6 +10,7 @@ def home_get():
 
 @main.route('/roomfinder', methods=['GET'])
 def find_rooms():
-    find_date = request.args.get('date', None)
+    date_string = request.args.get('date', None)
+    find_date = date_parser.parse(date_string)
     print(find_date)
     return 'OK', 200
