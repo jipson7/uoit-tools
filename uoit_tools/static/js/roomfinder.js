@@ -18,7 +18,15 @@ function roomFind() {
 }
 
 function displayRooms(result) {
-    console.log(result);
+    var table = $('#roomfinder-table')
+                    .html('<thead><tr><th>Room</th><th>Available Until</th></tr></thead>');
+    rooms = result.rooms;
+    for (var key in rooms) {
+        if(rooms.hasOwnProperty(key)) {
+            var available = (rooms[key] == null) ? 'End of Day' : rooms[key]
+            table.append('<tr><td>' + key + '</td><td>' + available + '</td</tr>');
+        }
+    }
 }
 
 function showRoomFinderError(error) {

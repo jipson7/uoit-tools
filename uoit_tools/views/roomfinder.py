@@ -39,7 +39,7 @@ def find_rooms():
 
 def create_room_json(free_rooms, t, day_of_week, semester):
     rooms = {}
-    fail_words = ['Virtual', 'TBA', 'OFFSITE']
+    fail_words = ['Virtual', 'TBA', 'OFFSITE', 'Georgian'];
     for day in free_rooms:
         room = day.location
         if not any(x in room for x in fail_words):
