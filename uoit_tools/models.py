@@ -20,6 +20,7 @@ class Course(db.Model):
     name = db.Column(db.String(64))              # Max found = 57
     department = db.Column(db.String(4))
     code = db.Column(db.String(5))
+    reg = db.Column(db.Integer)
     section = db.Column(db.String(3))
     capacity_total = db.Column(db.Integer)
     capacity_taken = db.Column(db.Integer)

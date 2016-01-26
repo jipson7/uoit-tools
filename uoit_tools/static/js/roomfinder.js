@@ -18,7 +18,6 @@ function roomFind() {
 }
 
 function displayRooms(result) {
-    console.log('success');
     console.log(result);
 }
 

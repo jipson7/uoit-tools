@@ -6,7 +6,8 @@ app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
 db = SQLAlchemy(app)
 
-from uoit_tools.views import main
+from uoit_tools.views import main, roomfinder
 
 app.register_blueprint(main.main)
+app.register_blueprint(roomfinder.roomfinder, url_prefix='/roomfinder')
 
