@@ -34,7 +34,7 @@ def find_rooms():
                     .distinct(Day.location)\
                     .with_entities(Day.location)\
                     .all()
-    free_room_list = create_room_json(free_rooms, t, day_of_week, semester)
+    free_room_list = create_room_json(free_rooms, t_offset, day_of_week, semester)
     return jsonify({'rooms': free_room_list}), 200
 
 def create_room_json(free_rooms, t, day_of_week, semester):
