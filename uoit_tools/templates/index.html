@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app='uoit-tools'>
 
 <head>
 
@@ -90,36 +90,7 @@
 
     <!-- Room Finder Section -->
     <section id="roomfinder">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2>Room Finder</h2>
-                    <hr class="star-primary">
-                </div>
-            </div>
-            <div class="row">
-                <div class='col-sm-8 col-sm-offset-2 col-xs-12'>
-                    <div class="form-group">
-                        <div class='input-group date' id='roomfinder-datetime'>
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                            <input type='text' class="form-control" />
-                            <span class="input-group-btn">
-                                <button type='button' 
-                                        class='btn btn-success' 
-                                        onclick='roomFind();'>Find
-                                </button>
-                            </span>
-                        </div>
-                        <div id='roomfinder-div'>
-                            <table class='table table-striped' id='roomfinder-table'>
-                            </table>
-                        </div>
-                    </div> 
-                </div>
-            </div>
-        </div>
+	<roomfinder></roomfinder>
     </section>
 
     <!-- Scheduler Section -->
@@ -260,6 +231,15 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
 
+    <!-- Angular JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.9/angular.js"></script>
+
+    <!-- Angular App init -->
+    <script src="static/init.js"></script>
+
+    <!-- Directives/Components -->
+    <script src="static/roomfinder/roomfinder.js"></script>
+
     <!-- Plugin JavaScript -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment.min.js"></script>
@@ -271,10 +251,6 @@
 
     <!-- Bootstrap Datetimepicker-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
-
-    <!-- Room Finder JavaScript -->
-    <script src="static/js/roomfinder.js"></script>
-
     <!-- Contact Form JavaScript -->
     <script src="static/js/jqBootstrapValidation.js"></script>
     <script src="static/js/contact_me.js"></script>
