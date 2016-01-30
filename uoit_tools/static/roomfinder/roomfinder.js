@@ -1,5 +1,5 @@
 angular.module('uoit-tools')
-.controller('roomfinderController', ['$scope', function($scope) {
+.controller('roomfinderController', ['$scope', '$http', function($scope, $http) {
     function init() {
         $('#roomfinder-datetime').datetimepicker({
             defaultDate: new Date(),
@@ -10,31 +10,17 @@ angular.module('uoit-tools')
 
 
     $scope.roomFind = function() {
-        var date = $('#roomfinder-datetime').data('date');
-        $.ajax({
+        $scope.rooms = null;
+        $scope.error = null;
+        $http({
             url: '/roomfinder',
-            data: { 'date': date },
-            success: displayRooms,
-            error: showRoomFinderError
+            method: 'GET',
+            params :{ 'date': $('#roomfinder-datetime').data('date') }
+        }).then(function(result) {
+            $scope.rooms = result.data.rooms;
+        }).catch(function(error) {
+            $scope.error = 'Unable to contact server, try again later.';
         });
-    }
-
-
-    function displayRooms(result) {
-        var table = $('#roomfinder-table')
-            .html('<thead><tr><th>Room</th><th>Available Until</th></tr></thead>');
-        rooms = result.rooms;
-        for (var key in rooms) {
-            if(rooms.hasOwnProperty(key)) {
-                var available = (rooms[key] == null) ? 'End of Day' : rooms[key]
-                table.append('<tr><td>' + key + '</td><td>' + available + '</td</tr>');
-            }
-        }
-    }
-
-    function showRoomFinderError(error) {
-        console.log('fail');
-        console.log(error);
     }
 
     init();

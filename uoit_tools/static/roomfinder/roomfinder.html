@@ -20,10 +20,25 @@
                         </button>
                     </span>
                 </div>
-                <div id='roomfinder-div'>
-                    <table class='table table-striped' id='roomfinder-table'>
-                    </table>
-                </div>
+                <hr>
+                <div ng-show='error' class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign"></span>
+                    {{error}}
+                </div> 
+                <table ng-show='rooms' class='table table-striped'>
+                    <thead>
+                        <tr>
+                            <td>Room</td>
+                            <td>Available Until</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat='(room, time) in rooms'>
+                            <td>{{room}}</td>
+                            <td>{{time || 'End of Day'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div> 
         </div>
     </div>
