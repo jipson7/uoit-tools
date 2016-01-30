@@ -28,14 +28,26 @@
                 <table ng-show='rooms' class='table table-striped'>
                     <thead>
                         <tr>
-                            <td>Room</td>
-                            <td>Available Until</td>
+                            <th>
+                            <a class='btn btn-link' ng-click="sortType = 'num'; sortReverse = !sortReverse">
+                            Room
+                            <span ng-show="sortType == 'num' && !sortReverse" class="fa fa-caret-down"></span>
+                            <span ng-show="sortType == 'num' && sortReverse" class="fa fa-caret-up"></span>
+                            </a> 
+                            </th>
+                            <th>
+                            <a class='btn btn-link' ng-click="sortType = 'time'; sortReverse = !sortReverse">
+                            Available Until
+                            <span ng-show="sortType == 'time' && !sortReverse" class="fa fa-caret-down"></span>
+                            <span ng-show="sortType == 'time' && sortReverse" class="fa fa-caret-up"></span>
+                            </a> 
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat='(room, time) in rooms'>
-                            <td>{{room}}</td>
-                            <td>{{time || 'End of Day'}}</td>
+                        <tr ng-repeat='room in rooms | orderBy:sortType:sortReverse'>
+                            <td>{{room.num}}</td>
+                            <td>{{room.time || 'End of Day'}}</td>
                         </tr>
                     </tbody>
                 </table>

@@ -38,7 +38,7 @@ def find_rooms():
     return jsonify({'rooms': free_room_list}), 200
 
 def create_room_json(free_rooms, t, day_of_week, semester):
-    rooms = {}
+    rooms = []
     fail_words = ['Virtual', 'TBA', 'OFFSITE', 'Georgian'];
     for day in free_rooms:
         room = day.location
@@ -49,7 +49,10 @@ def create_room_json(free_rooms, t, day_of_week, semester):
                            .filter(Day.location == room)\
                            .filter(t < Day.start_time)\
                            .order_by(Day.start_time).first()
-            rooms[room] = str(following.start_time) if following else None
+            rooms.append({
+                'num': room,
+                'time': str(following.start_time) if following else None
+            })
     return rooms
 
 def get_semester_code(d):

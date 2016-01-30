@@ -1,6 +1,8 @@
 angular.module('uoit-tools')
 .controller('roomfinderController', ['$scope', '$http', function($scope, $http) {
     function init() {
+        $scope.sortType = 'num';
+        $scope.sortReverse = true;
         $('#roomfinder-datetime').datetimepicker({
             defaultDate: new Date(),
             stepping: 30,
