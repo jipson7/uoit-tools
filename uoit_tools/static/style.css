@@ -333,9 +333,15 @@ footer .footer-below {
     outline: 0;
 }
 
-#roomfinder-div {
-    height: 250px;
+.scrollableDiv {
+    max-height: 60vh;
     overflow-y: auto;
-    overflow-x: hidden;
 }
 
+.roomfinder-table td:first-child {
+    width: 75%;
+}
+
+.roomfinder-table td:last-child {
+    width: 25%;
+}
