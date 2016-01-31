@@ -16,12 +16,21 @@
                 </select>
             </div>
             <br>
-            <div class='input-group'>
-                <div class='input-group-addon'>Courses</div> 
-                <input ng-list ng-model='schedule.courses' type='text' class='form-control'>
+            <div class='input-group' ng-class="{ 'has-error' : courseListError }">
+                <div class='input-group-addon'>Courses&ensp;</div> 
+                <input ng-list id='classList' 
+                       ng-model='schedule.courses' 
+                       type='text' class='form-control'
+                       placeholder='CSCI2040, BIO1010, PSY1000...'>
+            </div>
+            <br>
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign"></span>
+                {{courseListError}}
+                <a ng-click='courseListError=null;'class="close" data-dismiss="alert">&times;</a>
             </div>
             <hr>
-            <button type='button' ng-click='submitSchedule()' class='btn btn-success btn-block'>Generate</button>
+            <button ng-click='submitSchedule()' class='btn btn-success btn-block'>Generate</button>
         </div>
         <div class='col-md-4'>
             What what what what

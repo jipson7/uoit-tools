@@ -10,12 +10,18 @@ angular.module('uoit-tools')
             $scope.schedule.semester = result.data.current;
         }).catch(function(error) {
             console.log('Unable to fetch semester list. Retrying...');
-            //fetchSemesters();        
+            fetchSemesters();        
         });
     })();
 
     function init() {
         $scope.schedule = {};
+        var classTip = 'Enter a list of comma separated course codes.';
+        $('#classList').tooltip({
+            'trigger':'focus',
+            'title': classTip, 
+            'placement':'bottom'
+        });
     }
 
     $scope.submitSchedule = function() {
