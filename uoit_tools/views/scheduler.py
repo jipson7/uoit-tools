@@ -1,4 +1,5 @@
-from flask import Blueprint, request, jsonify
+import json, datetime
+from flask import Blueprint, request
 from sqlalchemy import or_, not_
 from uoit_tools.models import Course, Day
 from dateutil import parser as date_parser
@@ -10,7 +11,20 @@ scheduler = Blueprint('scheduler', __name__)
 def create_schedules():
     return 'OK', 200
 
-def get_semester_code(d):
+@scheduler.route('/semesters', methods=['GET'])
+def get_available_semesters():
+    semesters = {
+        'January (Winter) 2016': '201601',
+        'September (Fall) 2015': '201509'
+    }
+    data = {
+        'semesters': semesters,
+        'current': get_semester_code()
+    }
+    return json.dumps(data), 200
+
+
+def get_semester_code(d=datetime.now()):
     if d.month < 5:
         m = '01'
     elif d.month < 9:
