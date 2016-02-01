@@ -40,9 +40,27 @@ angular.module('uoit-tools')
         if (invalidCourses.length) {
             $scope.courseListError = 'The following course codes are invalid: ' 
                 + invalidCourses.join(', ');
+        } else {
+            $scope.schedule.courses = validCourses;
+            postData();
         }
-        console.log(validCourses);
     };
+
+    function postData() {
+        console.log($scope.schedule);
+        $http({
+            'url': '/scheduler',
+            'method': 'POST',
+            'data': $.param($scope.schedule),
+            'headers': {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        }).then(function(result) {
+            console.log(result);
+        }).catch(function(error) {
+            console.log(error);
+        });
+    }
 
     function cleanCourse(course) {
         course = course.replace(/\s/g, '').toUpperCase();

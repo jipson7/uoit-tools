@@ -7,8 +7,13 @@ from datetime import timedelta, datetime
 
 scheduler = Blueprint('scheduler', __name__)
 
-@scheduler.route('/', methods=['GET'])
+@scheduler.route('', methods=['POST'])
 def create_schedules():
+    f = request.form;
+    semester = f.get('semester', None)
+    courses = f.getlist('courses[]', None)
+    print(courses)
+    print(semester)
     return 'OK', 200
 
 @scheduler.route('/semesters', methods=['GET'])
