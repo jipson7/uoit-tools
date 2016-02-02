@@ -1,4 +1,5 @@
 from uoit_tools import db
+from sqlalchemy.ext.hybrid import hybrid_property
 
 class Day(db.Model):
     __tablename__ = 'day'
@@ -27,5 +28,13 @@ class Course(db.Model):
     capacity_remaining = db.Column(db.Integer)
     semester = db.Column(db.String(6))
     days = db.relationship(Day, backref='course', passive_deletes=True)
+
+    @hybrid_property
+    def course_code(self):
+        return self.department + self.code
+
+    @hybrid_property
+    def type(self):
+       return (self.days[0]).section_type
 
 
