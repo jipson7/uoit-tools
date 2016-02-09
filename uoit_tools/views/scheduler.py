@@ -13,13 +13,14 @@ scheduler = Blueprint('scheduler', __name__)
 
 @scheduler.route('/test', methods=['GET'])
 def test_gres():
-    course = Course.query.filter_by(course_code='CSCI2020U').first()
-    schedule = Schedule()
-    schedule.add(course.days)
+    #course = Course.query.filter_by(course_code='CSCI2020U').first()
+    #schedule = Schedule()
+    #schedule.add(course.days)
+    days = Day.query.filter(not_(Day.day.in_(('M', 'T', 'W', 'R', 'F'))))\
+            .filter(Day.section_type=='Lecture').all()
+    for d in days:
+        print(d.course.course_code)
     return 'ok', 200
-    #query = db.session.query(Day.section_type.distinct().label("title"))
-    #titles = [row.title for row in query.all()]
-    #return jsonify({'result':titles}), 200
 
 
 @scheduler.route('', methods=['POST'])
@@ -32,10 +33,15 @@ def create_schedules():
 
     def expandSchedules(course, days):
         for schedule in schedules:
+            print(len(schedules))
             if schedule.contains(course):
-                schedules.append(schedule.copy_and_delete(course))
+                new_schedule = copy.deepycopy(schedule)
+                new_schedule.delete(course)
+                schedules.append(new_schedule)
                 continue
-            if not schedule.add(days):
+            try:
+                schedule.add(days)
+            except Exception as e:
                 schedules.remove(schedule)
 
     for name in names:
@@ -46,7 +52,6 @@ def create_schedules():
             else:
                 for day in course.days:
                     expandSchedules(course, [day])
-
     return 'OK', 200
 
 @scheduler.route('/semesters', methods=['GET'])
@@ -85,20 +90,47 @@ class Schedule:
 
     # Returns true if the add was a success, false otherwise
     def add(self, days):
+        slots = []
         for day in days:
+            if day.section_type not in ['M', 'T', 'W', 'R', 'F']: return False
             slot = {
                 'name': day.course.course_code,
                 'start': day.start_time,
                 'end': day.end_time,
                 'type': day.section_type
             }
+            if self.slot_overlaps(slot, day.day):
+                raise ValueError('Cannot add day to schedule')
+            else:
+                slots.append(slot)
+        for slot in slots:
             self.weekdays[day.day].append(slot)
-        print(self.weekdays)
+        return True
+
+    def slot_overlaps(self, slot, day):
+        weekday = self.weekdays[day]
+        for existing in weekday:
+            if (slot['start']>=existing['start'] and slot['start']<existing['end'])\
+                or (slot['end']>existing['start'] and slot['end']<=existing['end']):
+                return True
+        return False
 
     # Check if the specific course type exists in schedule (i.e. lab or whatever)
     def contains(self, course):
+        for day, slots in list(self.weekdays.items()):
+            for slot in slots:
+                if course.course_code == slot['name'] and \
+                    course.type == slot['type']:
+                    return True
         return False
 
-    def copy_and_delete(self, course):
-        #return a copy of the entire schedule with the specified course type deleted
-        pass
+    def delete(self, course):
+        for day, slots in list(self.weekdays.items()):
+            for slot in slots:
+                if course.course_code == slot['name'] and \
+                    course.type == slot['type']:
+                    self.weekdays[day].remove(slot)
+        return s
+
+    def json(self):
+        return self.weekdays
