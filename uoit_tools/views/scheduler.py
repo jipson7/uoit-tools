@@ -1,5 +1,5 @@
-import json, datetime, copy
-from flask import Blueprint, request
+import json, datetime, copy, time
+from flask import Blueprint, request, jsonify
 from sqlalchemy import or_, not_
 from uoit_tools.models import Course, Day
 from dateutil import parser as date_parser
@@ -19,21 +19,24 @@ def create_schedules():
 
 
     schedules = [Schedule()]
+    errors = []
 
     for name in names:
         print(name)
         sections = Course.query.filter_by(course_code=name, semester=semester).all()
+        if not sections:
+            errors.append(name + ' was not found.')
         for course in sections:
             if course.type == 'Lecture':
                 schedules = expandSchedules(schedules, course, course.days)
             else:
                 for day in course.days:
                     schedules = expandSchedules(schedules, course, [day])
-    if schedules:
-        print([schedule.json() for schedule in schedules])
-    else:
-        print('fuckin nothing')
-    return 'OK', 200
+    data = {
+        'schedules':[schedule.json() for schedule in schedules],
+        'errors': errors
+        }
+    return jsonify(data), 200
 
 def expandSchedules(schedules, course, days):
     return_schedules = []
@@ -97,8 +100,8 @@ class Schedule:
                 return False
             slot = {
                 'name': day.course.course_code,
-                'start': day.start_time,
-                'end': day.end_time,
+                'start': str(day.start_time),
+                'end': str(day.end_time),
                 'type': day.section_type,
                 'day': day.day,
                 'id': self._get_id(day),
