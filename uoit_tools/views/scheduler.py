@@ -31,28 +31,35 @@ def create_schedules():
 
     schedules = [Schedule()]
 
-    def expandSchedules(course, days):
-        for schedule in schedules:
-            print(len(schedules))
-            if schedule.contains(course):
-                new_schedule = copy.deepycopy(schedule)
-                new_schedule.delete(course)
-                schedules.append(new_schedule)
-                continue
-            try:
-                schedule.add(days)
-            except Exception as e:
-                schedules.remove(schedule)
-
     for name in names:
         sections = Course.query.filter_by(course_code=name, semester=semester).all()
         for course in sections:
             if course.type == 'Lecture':
-                expandSchedules(course, course.days)
+                schedules = expandSchedules(schedules, course, course.days)
             else:
                 for day in course.days:
-                    expandSchedules(course, [day])
+                    print(day.start_time)
+                    schedules = expandSchedules(schedules, course, [day])
+    print([schedule.json() for schedule in schedules])
     return 'OK', 200
+
+def expandSchedules(schedules, course, days):
+    old_schedules = []
+    new_schedules = []
+    for schedule in schedules:
+        if schedule.contains_type(course):
+            old_schedules.append(schedule)
+            new_schedule = schedule.copy()
+            new_schedule.delete(course)
+            new_schedules.append(new_schedule)
+        else:
+            new_schedules.append(schedule)
+    for schedule in new_schedules:
+        try:
+            schedule.add(days)
+        except ValueError as e:
+            new_schedules.remove(schedule)
+    return new_schedules + old_schedules
 
 @scheduler.route('/semesters', methods=['GET'])
 def get_available_semesters():
@@ -88,24 +95,29 @@ class Schedule:
         'F': []
     }
 
-    # Returns true if the add was a success, false otherwise
+    def _get_id(self, day):
+        return 'C' + str(day.course.id) + 'D' + str(day.id)
+
     def add(self, days):
         slots = []
         for day in days:
-            if day.section_type not in ['M', 'T', 'W', 'R', 'F']: return False
+            #if day.section_type not in ['M', 'T', 'W', 'R', 'F']:
+            #    print('day is bad')
+            #    return False
             slot = {
                 'name': day.course.course_code,
                 'start': day.start_time,
                 'end': day.end_time,
-                'type': day.section_type
+                'type': day.section_type,
+                'day': day.day,
+                'id': self._get_id(day)
             }
             if self.slot_overlaps(slot, day.day):
                 raise ValueError('Cannot add day to schedule')
             else:
                 slots.append(slot)
         for slot in slots:
-            self.weekdays[day.day].append(slot)
-        return True
+            self.weekdays[slot['day']].append(slot)
 
     def slot_overlaps(self, slot, day):
         weekday = self.weekdays[day]
@@ -115,8 +127,16 @@ class Schedule:
                 return True
         return False
 
+    def contains_literal(self, day):
+        unique_id = self._get_id(day)
+        for day, slots in list(self.weekdays.items()):
+            for slot in slots:
+                if slot['id'] == unique_id:
+                    return True
+        return False
+
     # Check if the specific course type exists in schedule (i.e. lab or whatever)
-    def contains(self, course):
+    def contains_type(self, course):
         for day, slots in list(self.weekdays.items()):
             for slot in slots:
                 if course.course_code == slot['name'] and \
@@ -130,7 +150,11 @@ class Schedule:
                 if course.course_code == slot['name'] and \
                     course.type == slot['type']:
                     self.weekdays[day].remove(slot)
-        return s
 
     def json(self):
         return self.weekdays
+
+    def copy(self):
+        s = Schedule()
+        s.weekdays = copy.deepcopy(self.weekdays)
+        return s
