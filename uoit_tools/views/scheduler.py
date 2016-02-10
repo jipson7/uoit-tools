@@ -32,22 +32,28 @@ def create_schedules():
     schedules = [Schedule()]
 
     for name in names:
+        print(len(schedules))
         sections = Course.query.filter_by(course_code=name, semester=semester).all()
         for course in sections:
             if course.type == 'Lecture':
                 schedules = expandSchedules(schedules, course, course.days)
             else:
                 for day in course.days:
-                    print(day.start_time)
                     schedules = expandSchedules(schedules, course, [day])
-    print([schedule.json() for schedule in schedules])
+    if schedules:
+        print([schedule.json() for schedule in schedules])
+    else:
+        print('fuckin nothing')
     return 'OK', 200
 
 def expandSchedules(schedules, course, days):
+    print('expanding')
     old_schedules = []
     new_schedules = []
     for schedule in schedules:
-        if schedule.contains_type(course):
+        if schedule.contains_literal(days[0]):
+            old_schedules.append(schedule)
+        elif schedule.contains_type(course):
             old_schedules.append(schedule)
             new_schedule = schedule.copy()
             new_schedule.delete(course)
@@ -58,6 +64,7 @@ def expandSchedules(schedules, course, days):
         try:
             schedule.add(days)
         except ValueError as e:
+            print(e)
             new_schedules.remove(schedule)
     return new_schedules + old_schedules
 
@@ -96,7 +103,7 @@ class Schedule:
     }
 
     def _get_id(self, day):
-        return 'C' + str(day.course.id) + 'D' + str(day.id)
+        return day.course.course_code + day.section_type + day.day + str(day.start_time)
 
     def add(self, days):
         slots = []
