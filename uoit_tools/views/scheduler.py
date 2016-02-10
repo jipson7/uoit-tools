@@ -11,28 +11,17 @@ from flask import jsonify
 scheduler = Blueprint('scheduler', __name__)
 
 
-@scheduler.route('/test', methods=['GET'])
-def test_gres():
-    #course = Course.query.filter_by(course_code='CSCI2020U').first()
-    #schedule = Schedule()
-    #schedule.add(course.days)
-    days = Day.query.filter(not_(Day.day.in_(('M', 'T', 'W', 'R', 'F'))))\
-            .filter(Day.section_type=='Lecture').all()
-    for d in days:
-        print(d.course.course_code)
-    return 'ok', 200
-
-
 @scheduler.route('', methods=['POST'])
 def create_schedules():
     f = request.form;
     semester = f.get('semester', None)
     names = f.getlist('courses[]', None)
 
+
     schedules = [Schedule()]
 
     for name in names:
-        print(len(schedules))
+        print(name)
         sections = Course.query.filter_by(course_code=name, semester=semester).all()
         for course in sections:
             if course.type == 'Lecture':
@@ -47,26 +36,22 @@ def create_schedules():
     return 'OK', 200
 
 def expandSchedules(schedules, course, days):
-    print('expanding')
-    old_schedules = []
+    return_schedules = []
     new_schedules = []
     for schedule in schedules:
         if schedule.contains_literal(days[0]):
-            old_schedules.append(schedule)
+            return_schedules.append(schedule)
         elif schedule.contains_type(course):
-            old_schedules.append(schedule)
+            return_schedules.append(schedule)
             new_schedule = schedule.copy()
-            new_schedule.delete(course)
+            new_schedule.delete_slot(course)
             new_schedules.append(new_schedule)
         else:
-            new_schedules.append(schedule)
+            new_schedules.append(schedule.copy())
     for schedule in new_schedules:
-        try:
-            schedule.add(days)
-        except ValueError as e:
-            print(e)
-            new_schedules.remove(schedule)
-    return new_schedules + old_schedules
+        if schedule.add(days):
+            return_schedules.append(schedule)
+    return return_schedules
 
 @scheduler.route('/semesters', methods=['GET'])
 def get_available_semesters():
@@ -108,9 +93,8 @@ class Schedule:
     def add(self, days):
         slots = []
         for day in days:
-            #if day.section_type not in ['M', 'T', 'W', 'R', 'F']:
-            #    print('day is bad')
-            #    return False
+            if day.day not in ['M', 'T', 'W', 'R', 'F']:
+                return False
             slot = {
                 'name': day.course.course_code,
                 'start': day.start_time,
@@ -120,11 +104,12 @@ class Schedule:
                 'id': self._get_id(day)
             }
             if self.slot_overlaps(slot, day.day):
-                raise ValueError('Cannot add day to schedule')
+                return False
             else:
                 slots.append(slot)
         for slot in slots:
             self.weekdays[slot['day']].append(slot)
+        return True
 
     def slot_overlaps(self, slot, day):
         weekday = self.weekdays[day]
@@ -151,7 +136,7 @@ class Schedule:
                     return True
         return False
 
-    def delete(self, course):
+    def delete_slot(self, course):
         for day, slots in list(self.weekdays.items()):
             for slot in slots:
                 if course.course_code == slot['name'] and \
