@@ -101,7 +101,8 @@ class Schedule:
                 'end': day.end_time,
                 'type': day.section_type,
                 'day': day.day,
-                'id': self._get_id(day)
+                'id': self._get_id(day),
+                'reg': day.course.reg
             }
             if self.slot_overlaps(slot, day.day):
                 return False
