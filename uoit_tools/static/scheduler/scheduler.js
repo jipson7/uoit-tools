@@ -14,13 +14,25 @@ angular.module('uoit-tools')
         });
     })();
 
-    function init() {
+    (function init() {
         $scope.schedule = {};
         var classTip = 'Enter a list of comma separated course codes.';
         $('#classList').tooltip({
             'trigger':'focus',
             'title': classTip, 
             'placement':'bottom'
+        });
+        createCalendar();
+    })();
+
+    function createCalendar() {
+        $('#test-calendar').fullCalendar({
+            header: {
+                left: '',
+                center: '',
+                right: ''
+            },
+            defaultView: 'basicWeek',
         });
     }
 
@@ -82,8 +94,6 @@ angular.module('uoit-tools')
         }
         return (dept + code);
     }
-
-    init();
 }])
 .directive('scheduler', function() {
     return {

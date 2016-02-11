@@ -1,12 +1,9 @@
-import json, datetime, copy, time
+import copy, json
 from flask import Blueprint, request, jsonify
-from sqlalchemy import or_, not_
 from uoit_tools.models import Course, Day
 from dateutil import parser as date_parser
-from datetime import timedelta, datetime
-#Debuggy
-from uoit_tools import db
-from flask import jsonify
+from datetime import datetime
+
 
 scheduler = Blueprint('scheduler', __name__)
 
@@ -22,7 +19,6 @@ def create_schedules():
     errors = []
 
     for name in names:
-        print(name)
         sections = Course.query.filter_by(course_code=name, semester=semester).all()
         if not sections:
             errors.append(name + ' was not found.')
@@ -58,7 +54,6 @@ def expandSchedules(schedules, course, days):
 
 @scheduler.route('/semesters', methods=['GET'])
 def get_available_semesters():
-    #This function needs to be finished with a query to the db.
     semesters = {
         'January (Winter) 2016': '201601',
         'September (Fall) 2015': '201509'
