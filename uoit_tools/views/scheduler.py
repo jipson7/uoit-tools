@@ -2,7 +2,7 @@ import copy, json
 from flask import Blueprint, request, jsonify
 from uoit_tools.models import Course, Day
 from dateutil import parser as date_parser
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 scheduler = Blueprint('scheduler', __name__)
@@ -13,7 +13,6 @@ def create_schedules():
     f = request.form;
     semester = f.get('semester', None)
     names = f.getlist('courses[]', None)
-
 
     schedules = [Schedule()]
     errors = []
@@ -30,7 +29,8 @@ def create_schedules():
                     schedules = expandSchedules(schedules, course, [day])
     data = {
         'schedules':[schedule.json() for schedule in schedules],
-        'errors': errors
+        'errors': errors,
+        'firstSunday': get_first_sunday(semester)
         }
     return jsonify(data), 200
 
@@ -63,16 +63,6 @@ def get_available_semesters():
         'current': get_semester_code()
     }
     return json.dumps(data), 200
-
-
-def get_semester_code(d=datetime.now()):
-    if d.month < 5:
-        m = '01'
-    elif d.month < 9:
-        m = '05'
-    else:
-        m = '09'
-    return str(d.year) + m
 
 
 class Schedule:
@@ -126,7 +116,6 @@ class Schedule:
                     return True
         return False
 
-    # Check if the specific course type exists in schedule (i.e. lab or whatever)
     def contains_type(self, course):
         for day, slots in list(self.weekdays.items()):
             for slot in slots:
@@ -149,3 +138,19 @@ class Schedule:
         s = Schedule()
         s.weekdays = copy.deepcopy(self.weekdays)
         return s
+
+
+def get_semester_code(d=datetime.now()):
+    if d.month < 5:
+        m = '01'
+    elif d.month < 9:
+        m = '05'
+    else:
+        m = '09'
+    return str(d.year) + m
+
+
+def get_first_sunday(semester):
+    d = datetime.strptime(semester, '%Y%d')
+    days_ahead = 7 - d.weekday()
+    return str(d + timedelta(days_ahead))
