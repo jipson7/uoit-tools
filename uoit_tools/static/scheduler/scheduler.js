@@ -32,7 +32,13 @@ angular.module('uoit-tools')
                 center: '',
                 right: ''
             },
-            defaultView: 'basicWeek',
+            defaultView: 'agendaWeek',
+            allDaySlot: false,
+            minTime: '08:00:00',
+            maxTime: '22:00:00',
+            weekends: false,
+            height: 'auto',
+            columnFormat: 'ddd'
         });
     }
 
