@@ -22,11 +22,36 @@ angular.module('uoit-tools')
             'title': classTip, 
             'placement':'bottom'
         });
-        createCalendar();
     })();
 
-    function createCalendar() {
-        $('#test-calendar').fullCalendar({
+    function displaySchedulingErrors(errors) {
+        for (var i = 0; i < errors.length; i++) {
+            console.log(errors[i]);
+        }
+    }
+
+    function createSlides(result) {
+        var schedules = result.data.schedules;
+        var sunday = result.data.firstSunday;
+        displaySchedulingErrors(result.data.errors);
+
+        $scope.tabs = []
+
+        for (var i = 0; i < schedules.length; i++) {
+            $scope.tabs.push('schedule-' + i)
+            var schedule = schedules[i];
+        }
+
+        $(function() {
+            $('#schedule-slides a').click(function (e) {
+                e.preventDefault()
+                $(this).tab('show')
+            })
+        });
+    }
+
+    function createCalendar(schedule, sunday, id) {
+        $('#' + id).fullCalendar({
             header: {
                 left: '',
                 center: '',
@@ -38,12 +63,17 @@ angular.module('uoit-tools')
             maxTime: '22:00:00',
             weekends: false,
             height: 'auto',
-            columnFormat: 'ddd'
+            columnFormat: 'ddd',
+            defaultDate: sunday
         });
     }
 
     $scope.submitSchedule = function() {
         var courses = $scope.schedule.courses;
+        if (!courses) {
+            $scope.courseListError = 'Must provide at least one course...'
+                return
+        }
         $scope.courseListError = null;
         invalidCourses = [];
         validCourses = []
@@ -65,7 +95,6 @@ angular.module('uoit-tools')
     };
 
     function postData() {
-        console.log($scope.schedule);
         $http({
             'url': '/scheduler',
             'method': 'POST',
@@ -74,9 +103,9 @@ angular.module('uoit-tools')
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }).then(function(result) {
-            console.log(result);
+            createSlides(result);
         }).catch(function(error) {
-            console.log(error);
+            $scope.courseListError = 'Unable to contact server, try again later...';
         });
     }
 
