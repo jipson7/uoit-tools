@@ -37,9 +37,11 @@ angular.module('uoit-tools')
 
         $scope.tabs = []
 
-        for (var i = 0; i < schedules.length; i++) {
-            $scope.tabs.push('schedule-' + i)
+        for (var i = 1; i <= schedules.length; i++) {
+            $scope.tabs.push(i);
+            var id = 'schedule-' + i
             var schedule = schedules[i];
+            createCalendar(schedule, sunday, id);
         }
 
         $(function() {
@@ -51,7 +53,8 @@ angular.module('uoit-tools')
     }
 
     function createCalendar(schedule, sunday, id) {
-        $('#' + id).fullCalendar({
+        var calendar = $('<div/>')
+        calendar.fullCalendar({
             header: {
                 left: '',
                 center: '',
@@ -66,6 +69,7 @@ angular.module('uoit-tools')
             columnFormat: 'ddd',
             defaultDate: sunday
         });
+        console.log($('#' + id).length)
     }
 
     $scope.submitSchedule = function() {
