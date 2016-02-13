@@ -1,11 +1,12 @@
 
 angular.module('uoit-tools')
-.directive('calendar', function() {
+.directive('calendar', function($timeout) {
     return {
         restrict: 'A',
         scope: {
             data: '@',
-            sunday: '@'
+            sunday: '@',
+            first: '@'
        },
         link: function($scope, element) {
             $(element).fullCalendar({
@@ -23,6 +24,11 @@ angular.module('uoit-tools')
                 columnFormat: 'ddd',
                 defaultDate: $scope.sunday
             });
+            if ($scope.first) {
+                $timeout(function() {
+                    $(element).fullCalendar('render');
+                });
+            }
         }
     }
 });

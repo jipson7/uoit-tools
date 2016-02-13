@@ -42,11 +42,13 @@
                     </li>
                 </ul>
                 <div class='tab-content'>
-                    <div calendar data='{{schedule}}' sunday='{{sunday}}' 
+                    <div calendar data='{{schedule}}' 
+                         sunday='{{sunday}}' 
+                         first='{{$first}}'
                          ng-repeat='schedule in schedules' 
                          id='schedule-{{$index + 1}}' 
-                         class='tab-pane fade' 
                          role='tabpanel' 
+                         class='tab-pane fade' 
                          ng-class="{active: $first, in: $first}">
                     </div>
                 </div>
