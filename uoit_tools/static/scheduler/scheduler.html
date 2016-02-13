@@ -33,16 +33,21 @@
             <hr>
             <button ng-click='submitSchedule()' class='btn btn-success btn-block'>Generate</button>
         </div>
-        <div class='col-md-6' ng-show='tabs.length > 0'>
+        <div class='col-md-6' ng-show='schedules.length > 0'>
             <hr class='hidden-lg hidden-md'>
             <div id='schedule-slides'>
                 <ul class='nav nav-tabs' role='tablist'> 
-                    <li ng-repeat='tab in tabs' role='presentation' ng-class="{active: $first}">
-                        <a class='btn btn-success' href='#schedule-{{tab}}' role='tab' data-toggle='tab'>{{tab}}</a>
+                    <li ng-repeat='schedule in schedules' role='presentation' ng-class="{active: $first}">
+                        <a class='btn btn-success' href='#schedule-{{$index + 1}}' role='tab' data-toggle='tab'>{{$index + 1}}</a>
                     </li>
                 </ul>
                 <div class='tab-content'>
-                    <div ng-repeat='tab in tabs' id='schedule-{{tab}}' class='tab-pane fade' role='tabpanel' ng-class="{active: $first, in: $first}">
+                    <div calendar data='{{schedule}}' sunday='{{sunday}}' 
+                         ng-repeat='schedule in schedules' 
+                         id='schedule-{{$index + 1}}' 
+                         class='tab-pane fade' 
+                         role='tabpanel' 
+                         ng-class="{active: $first, in: $first}">
                     </div>
                 </div>
             </div>

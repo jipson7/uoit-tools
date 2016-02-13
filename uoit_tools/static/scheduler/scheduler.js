@@ -1,6 +1,7 @@
 
 angular.module('uoit-tools')
 .controller('schedulerController', ['$scope', '$http', function($scope, $http) {
+
     (function fetchSemesters() {
         $http({
             'url': '/scheduler/semesters',
@@ -24,59 +25,22 @@ angular.module('uoit-tools')
         });
     })();
 
+    $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+        var target = $(e.target).attr("href");
+        $(target).fullCalendar('render');
+    })
+
     function displaySchedulingErrors(errors) {
         for (var i = 0; i < errors.length; i++) {
             console.log(errors[i]);
         }
     }
 
-    function createSlides(result) {
-        var schedules = result.data.schedules;
-        var sunday = result.data.firstSunday;
-        displaySchedulingErrors(result.data.errors);
-
-        $scope.tabs = []
-
-        for (var i = 1; i <= schedules.length; i++) {
-            $scope.tabs.push(i);
-            var id = 'schedule-' + i
-            var schedule = schedules[i];
-            createCalendar(schedule, sunday, id);
-        }
-
-        $(function() {
-            $('#schedule-slides a').click(function (e) {
-                e.preventDefault()
-                $(this).tab('show')
-            })
-        });
-    }
-
-    function createCalendar(schedule, sunday, id) {
-        var calendar = $('<div/>')
-        calendar.fullCalendar({
-            header: {
-                left: '',
-                center: '',
-                right: ''
-            },
-            defaultView: 'agendaWeek',
-            allDaySlot: false,
-            minTime: '08:00:00',
-            maxTime: '22:00:00',
-            weekends: false,
-            height: 'auto',
-            columnFormat: 'ddd',
-            defaultDate: sunday
-        });
-        console.log($('#' + id).length)
-    }
-
     $scope.submitSchedule = function() {
         var courses = $scope.schedule.courses;
         if (!courses) {
-            $scope.courseListError = 'Must provide at least one course...'
-                return
+            $scope.courseListError = 'Must provide at least one course...';
+            return;
         }
         $scope.courseListError = null;
         invalidCourses = [];
@@ -107,7 +71,9 @@ angular.module('uoit-tools')
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }).then(function(result) {
-            createSlides(result);
+            $scope.schedules = result.data.schedules;
+            $scope.sunday = result.data.firstSunday;
+            displaySchedulingErrors(result.data.errors);
         }).catch(function(error) {
             $scope.courseListError = 'Unable to contact server, try again later...';
         });
