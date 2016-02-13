@@ -152,5 +152,5 @@ def get_semester_code(d=datetime.now()):
 
 def get_first_sunday(semester):
     d = datetime.strptime(semester, '%Y%d')
-    days_ahead = 7 - d.weekday()
+    days_ahead = 6 - d.weekday()
     return str(d + timedelta(days_ahead))
