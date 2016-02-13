@@ -63,6 +63,7 @@ angular.module('uoit-tools')
     };
 
     function postData() {
+        $('#generate').prop('disabled', true)
         $http({
             'url': '/scheduler',
             'method': 'POST',
@@ -74,8 +75,10 @@ angular.module('uoit-tools')
             $scope.schedules = result.data.schedules;
             $scope.sunday = result.data.firstSunday;
             displaySchedulingErrors(result.data.errors);
+            $('#generate').prop('disabled', false)
         }).catch(function(error) {
             $scope.courseListError = 'Unable to contact server, try again later...';
+            $('#generate').prop('disabled', false)
         });
     }
 
