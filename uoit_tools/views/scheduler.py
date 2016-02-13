@@ -1,4 +1,4 @@
-import copy, json
+import copy, json, collections
 from flask import Blueprint, request, jsonify
 from uoit_tools.models import Course, Day
 from dateutil import parser as date_parser
@@ -14,7 +14,7 @@ def create_schedules():
     semester = f.get('semester', None)
     names = f.getlist('courses[]', None)
 
-    schedules = [Schedule()]
+    schedules = {Schedule()}
     errors = []
 
     for name in names:
@@ -35,21 +35,21 @@ def create_schedules():
     return jsonify(data), 200
 
 def expandSchedules(schedules, course, days):
-    return_schedules = []
+    return_schedules = set()
     new_schedules = []
     for schedule in schedules:
         if schedule.contains_literal(days[0]):
-            return_schedules.append(schedule)
+            return_schedules.add(schedule)
         elif schedule.contains_type(course):
-            return_schedules.append(schedule)
+            return_schedules.add(schedule)
             new_schedule = schedule.copy()
             new_schedule.delete_slot(course)
             new_schedules.append(new_schedule)
         else:
-            new_schedules.append(schedule.copy())
+            new_schedules.append(schedule)
     for schedule in new_schedules:
         if schedule.add(days):
-            return_schedules.append(schedule)
+            return_schedules.add(schedule)
     return return_schedules
 
 @scheduler.route('/semesters', methods=['GET'])
@@ -76,7 +76,10 @@ class Schedule:
     }
 
     def _get_id(self, day):
-        return day.course.course_code + day.section_type + day.day + str(day.start_time)
+        if day.section_type == 'Lecture':
+            return day.course.course_code + day.course.section
+        else:
+            return day.course.course_code + day.section_type + day.day + str(day.start_time)
 
     def add(self, days):
         slots = []
@@ -109,8 +112,9 @@ class Schedule:
         return False
 
     def contains_literal(self, day):
+        #Use this function to append alternate reg codes?
         unique_id = self._get_id(day)
-        for day, slots in list(self.weekdays.items()):
+        for d, slots in list(self.weekdays.items()):
             for slot in slots:
                 if slot['id'] == unique_id:
                     return True
@@ -138,6 +142,19 @@ class Schedule:
         s = Schedule()
         s.weekdays = copy.deepcopy(self.weekdays)
         return s
+
+    def __repr__(self):
+        x = []
+        od = collections.OrderedDict(sorted(self.weekdays.items()))
+        for key, val in od.items():
+            x.append(val)
+        return json.dumps(x)
+
+    def __hash__(self):
+        return hash(self.__repr__())
+
+    def __eq__(self, other):
+        return self.__hash__() == other.__hash__()
 
 
 def get_semester_code(d=datetime.now()):
