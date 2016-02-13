@@ -147,7 +147,8 @@ class Schedule:
         x = []
         od = collections.OrderedDict(sorted(self.weekdays.items()))
         for key, val in od.items():
-            x.append(val)
+            day = json.dumps(sorted([json.dumps(v) for v in val]))
+            x.append(key + day)
         return json.dumps(x)
 
     def __hash__(self):
