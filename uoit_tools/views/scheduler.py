@@ -95,7 +95,7 @@ class Schedule:
                 'type': day.section_type,
                 'day': day.day,
                 'id': self._get_id(day),
-                'reg': day.course.reg
+                'reg': [day.course.reg]
             }
             if self.slot_overlaps(slot, day.day):
                 return False
@@ -116,9 +116,10 @@ class Schedule:
     def contains_literal(self, day):
         #Use this function to append alternate reg codes?
         unique_id = self._get_id(day)
-        for d, slots in list(self.weekdays.items()):
+        for d, slots in self.weekdays.items():
             for slot in slots:
                 if slot['id'] == unique_id:
+                    slot['reg'].append(day.course.reg)
                     return True
         return False
 
@@ -131,7 +132,7 @@ class Schedule:
         return False
 
     def delete_slot(self, course):
-        for day, slots in list(self.weekdays.items()):
+        for day, slots in self.weekdays.items():
             for slot in slots:
                 if course.course_code == slot['name'] and \
                     course.type == slot['type']:
@@ -145,16 +146,13 @@ class Schedule:
         s.weekdays = copy.deepcopy(self.weekdays)
         return s
 
-    def __repr__(self):
-        x = []
-        od = collections.OrderedDict(sorted(self.weekdays.items()))
-        for key, val in od.items():
-            day = json.dumps(sorted([json.dumps(v) for v in val]))
-            x.append(key + day)
-        return json.dumps(x)
-
     def __hash__(self):
-        return hash(self.__repr__())
+        result = []
+        od = collections.OrderedDict(sorted(self.weekdays.items()))
+        for d, slots in od.items():
+            day = json.dumps(sorted([s['id'] for s in slots]))
+            result.append(d + day)
+        return hash(json.dumps(result))
 
     def __eq__(self, other):
         return self.__hash__() == other.__hash__()
