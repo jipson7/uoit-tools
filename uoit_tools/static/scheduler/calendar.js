@@ -56,7 +56,12 @@ angular.module('uoit-tools')
                 height: 'auto',
                 columnFormat: 'ddd',
                 defaultDate: sunday,
-                events: events
+                events: events,
+                eventRender: function(event, element) {
+                    element.tooltip({
+                        title: event.tooltip
+                    })
+                }
             });
             
             
