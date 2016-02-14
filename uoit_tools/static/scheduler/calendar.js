@@ -4,13 +4,13 @@ angular.module('uoit-tools')
 
     var weekmap = {'M': 1, 'T': 2, 'W': 3, 'R': 4, 'F': 5};
 
-    function addSlot(slot, element, day) {
-        var calEvent = {
+    function createEvent(slot, day) {
+        return {
             start: mergeDayTime(day, slot.start),
             end: mergeDayTime(day, slot.end),
-            title: slot.name + ' - ' + slot.type
+            title: slot.name + ' - ' + slot.type,
+            tooltip: slot.name + ' - ' + slot.type
         }
-        $(element).fullCalendar('renderEvent', calEvent, true);
     }
 
     function mergeDayTime(day, time) {
@@ -28,6 +28,20 @@ angular.module('uoit-tools')
         link: function($scope, element) {
             var schedule = JSON.parse($scope.data);
             var sunday = new Date($scope.sunday);
+            var events = [];
+
+            for (var day in schedule) {
+                if (schedule.hasOwnProperty(day)) {
+                    var daydate = new Date(sunday.getTime());
+                    daydate.setDate(daydate.getDate() + weekmap[day]);
+                    var slots = schedule[day];
+                    for (var i = 0; i < slots.length; i++) {
+                        var slot = slots[i];
+                        events.push(createEvent(slot, daydate));
+                    }
+                }
+            }
+
             $(element).fullCalendar({
                 header: {
                     left: '',
@@ -41,25 +55,17 @@ angular.module('uoit-tools')
                 weekends: false,
                 height: 'auto',
                 columnFormat: 'ddd',
-                defaultDate: sunday
+                defaultDate: sunday,
+                events: events
             });
+            
+            
             if ($scope.first) {
                 $timeout(function() {
                     $(element).fullCalendar('render');
                 });
             }
-            
-            for (var day in schedule) {
-                if (schedule.hasOwnProperty(day)) {
-                    var daydate = new Date(sunday.getTime());
-                    daydate.setDate(daydate.getDate() + weekmap[day]);
-                    var slots = schedule[day];
-                    for (var i = 0; i < slots.length; i++) {
-                        var slot = slots[i];
-                        addSlot(slot, element, daydate);
-                    }
-                }
-            }
+
         }
     }
 });
