@@ -24,11 +24,9 @@
                        placeholder='CSCI2040, BIO1010, PSY1000...'>
             </div>
             <br>
-            <div ng-show='courseListError' 
-                 class="alert alert-danger" role="alert">
-                <span class="glyphicon glyphicon-exclamation-sign"></span>
-                {{courseListError}}
-                <a ng-click='courseListError=null;'class="close" data-dismiss="alert">&times;</a>
+            <div ng-show='error' class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign"></span>{{error}}
+                <a ng-click='error=null;'class="close" data-dismiss="alert">&times;</a>
             </div>
             <hr>
             <button ng-click='submitSchedule()' class='btn btn-success btn-block' id='generate'>Generate</button>

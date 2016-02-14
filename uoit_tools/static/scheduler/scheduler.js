@@ -15,13 +15,13 @@ angular.module('uoit-tools')
         });
     })();
 
-    (function init() {
+    (function initForm() {
         $scope.schedule = {};
         var classTip = 'Enter a list of comma separated course codes.';
         $('#classList').tooltip({
             'trigger':'focus',
             'title': classTip, 
-            'placement':'bottom'
+            'placement':'top'
         });
     })();
 
@@ -30,34 +30,29 @@ angular.module('uoit-tools')
         $(target).fullCalendar('render');
     })
 
-    function displaySchedulingErrors(errors) {
-        for (var i = 0; i < errors.length; i++) {
-            console.log(errors[i]);
-        }
-    }
 
     $scope.submitSchedule = function() {
+        delete $scope.schedules;
         var courses = $scope.schedule.courses;
-        if (!courses) {
-            $scope.courseListError = 'Must provide at least one course...';
+        $scope.error = null
+        if (!courses || !courses.length) {
+            $scope.error = 'Must provide at least one course...';
             return;
         }
-        $scope.courseListError = null;
-        invalidCourses = [];
-        validCourses = []
+        var invalid = []
+        var valid = []
         for (var i in courses) {
             var course = cleanCourse(courses[i]);
             if (!course) {
-                invalidCourses.push(courses[i]); 
+                invalid.push(courses[i])
             } else {
-                validCourses.push(course);
+                valid.push(course);
             }
         }
-        if (invalidCourses.length) {
-            $scope.courseListError = 'The following course codes are invalid: ' 
-                + invalidCourses.join(', ');
+        if (invalid.length) {
+            $scope.error = 'The following courses are invalid: ' + invalid.join(', ');
         } else {
-            $scope.schedule.courses = validCourses;
+            $scope.schedule.courses = valid;
             postData();
         }
     };
@@ -74,10 +69,12 @@ angular.module('uoit-tools')
         }).then(function(result) {
             $scope.schedules = result.data.schedules;
             $scope.sunday = result.data.firstSunday;
-            displaySchedulingErrors(result.data.errors);
-            $('#generate').prop('disabled', false)
         }).catch(function(error) {
-            $scope.courseListError = 'Unable to contact server, try again later...';
+            if (error.status === 500)
+                $scope.error = 'Unable to contact server, try again later...';
+            else
+                $scope.error = error.data;
+        }).then(function() {
             $('#generate').prop('disabled', false)
         });
     }

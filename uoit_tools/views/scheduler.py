@@ -15,21 +15,22 @@ def create_schedules():
     names = f.getlist('courses[]', None)
 
     schedules = {Schedule()}
-    errors = []
 
     for name in names:
         sections = Course.query.filter_by(course_code=name, semester=semester).all()
         if not sections:
-            errors.append(name + ' was not found.')
+            return name + ' was not found in course list, remove it and try again.', 400
         for course in sections:
             if course.type == 'Lecture':
                 schedules = expandSchedules(schedules, course, course.days)
             else:
                 for day in course.days:
                     schedules = expandSchedules(schedules, course, [day])
+    result = [x.json() for x in schedules]
+    if not result:
+        return 'No possible schedules exist for this combination of courses.', 404
     data = {
-        'schedules':[schedule.json() for schedule in schedules],
-        'errors': errors,
+        'schedules': result,
         'firstSunday': get_first_sunday(semester)
         }
     return jsonify(data), 200
@@ -67,13 +68,14 @@ def get_available_semesters():
 
 class Schedule:
 
-    weekdays = {
-        'M': [],
-        'T': [],
-        'W': [],
-        'R': [],
-        'F': []
-    }
+    def __init__(self):
+        self.weekdays = {
+            'M': [],
+            'T': [],
+            'W': [],
+            'R': [],
+            'F': []
+        }
 
     def _get_id(self, day):
         if day.section_type == 'Lecture':
