@@ -95,7 +95,7 @@ angular.module('uoit-tools')
                     $(element).fullCalendar('render');
                 });
             }
-
+            $('.fc-button').removeClass().addClass('btn btn-default');
         }
     }
 }]);
