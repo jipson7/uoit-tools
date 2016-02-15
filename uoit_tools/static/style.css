@@ -349,3 +349,13 @@ footer .footer-below {
 .fc-toolbar {
     margin-top: 1em;
 }
+
+.nav-tabs {
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: -webkit-box;
+    display: -moz-box;
+}
+.nav-tabs>li {
+    float: none;
+}
