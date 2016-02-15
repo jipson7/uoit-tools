@@ -6,7 +6,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-5 col-md-offset-1">
+        <div ng-class="{'col-md-5': (schedules.length > 0), 'col-md-offset-1': (schedules.length > 0), 'col-md-offset-2':(!schedules), 'col-md-8':(!schedules)}">
             <div class='input-group'>
                 <div class='input-group-addon'>Semester</div> 
                 <select ng-model='schedule.semester' class='form-control'>
