@@ -49,12 +49,26 @@ angular.module('uoit-tools')
                         click: function() {
                             console.log('show a modal here');
                         }
+                    },
+                    prevSchedule: {
+                        text: 'Previous',
+                        click: function() {
+                            $('.nav-tabs > .active').prev('li')
+                                .find('a').trigger('click');
+                        }
+                    },
+                    nextSchedule: {
+                        text: 'Next',
+                        click: function() {
+                            $('.nav-tabs > .active').next('li')
+                                .find('a').trigger('click');
+                        }
                     }
                 },
                 header: {
-                    left: '',
-                    center: '',
-                    right: 'register'
+                    left: 'prevSchedule',
+                    center: 'register',
+                    right: 'nextSchedule'
                 },
                 defaultView: 'agendaWeek',
                 allDaySlot: false,
