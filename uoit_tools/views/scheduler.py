@@ -119,7 +119,8 @@ class Schedule:
         for d, slots in self.weekdays.items():
             for slot in slots:
                 if slot['id'] == unique_id:
-                    slot['reg'].append(day.course.reg)
+                    if day.course.reg not in slot['reg']:
+                        slot['reg'].append(day.course.reg)
                     return True
         return False
 
