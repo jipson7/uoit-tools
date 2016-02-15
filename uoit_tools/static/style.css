@@ -345,3 +345,7 @@ footer .footer-below {
 .roomfinder-table td:last-child {
     width: 25%;
 }
+
+.fc-toolbar {
+    margin-top: 1em;
+}
