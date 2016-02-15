@@ -43,10 +43,18 @@ angular.module('uoit-tools')
             }
 
             $(element).fullCalendar({
+                customButtons: {
+                    register: {
+                        text: 'How to Register for this Schedule',
+                        click: function() {
+                            console.log('show a modal here');
+                        }
+                    }
+                },
                 header: {
                     left: '',
                     center: '',
-                    right: ''
+                    right: 'register'
                 },
                 defaultView: 'agendaWeek',
                 allDaySlot: false,
