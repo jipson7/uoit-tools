@@ -9,7 +9,7 @@ angular.module('uoit-tools')
             start: mergeDayTime(day, slot.start),
             end: mergeDayTime(day, slot.end),
             title: slot.name + ' - ' + slot.type,
-            tooltip: slot.name + ' - ' + slot.type
+            regCodes: slot.reg
         }
     }
 
@@ -49,7 +49,8 @@ angular.module('uoit-tools')
                         click: function() {
                             ngDialog.open({
                                 template: '/static/scheduler/register.html',
-                                controller: 'registerController'
+                                controller: 'registerController',
+                                data: {'events': events}
                             });
                         }
                     },
@@ -84,7 +85,7 @@ angular.module('uoit-tools')
                 events: events,
                 eventRender: function(event, element) {
                     element.tooltip({
-                        title: event.tooltip
+                        title: event.title
                     })
                 }
             });

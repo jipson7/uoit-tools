@@ -1,1 +1,13 @@
-<p>COOL!</p>
+
+<div style='height:100%; overflow-y:auto;'>
+    <table class='table table-striped'>
+        <tr>
+            <th>Section</th>
+            <th>Registration Code(s)</th>
+        </tr>
+        <tr ng-repeat='(section, regCodes) in codeList'>
+            <td>{{section}}</td>
+            <td>{{regCodes.join(', ')}}</td>
+        </tr>
+    </table
+</div>
