@@ -1,6 +1,6 @@
 
 angular.module('uoit-tools')
-.directive('calendar', function($timeout) {
+.directive('calendar', ['$timeout', 'ngDialog', function($timeout, ngDialog) {
 
     var weekmap = {'M': 1, 'T': 2, 'W': 3, 'R': 4, 'F': 5};
 
@@ -47,7 +47,10 @@ angular.module('uoit-tools')
                     register: {
                         text: 'How to Register for this Schedule',
                         click: function() {
-                            console.log('show a modal here');
+                            ngDialog.open({
+                                template: '/static/scheduler/register.html',
+                                controller: 'registerController'
+                            });
                         }
                     },
                     prevSchedule: {
@@ -95,4 +98,4 @@ angular.module('uoit-tools')
 
         }
     }
-});
+}]);

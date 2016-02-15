@@ -1,3 +1,3 @@
 
-angular.module('uoit-tools', [])
+angular.module('uoit-tools', ['ngDialog'])
 
