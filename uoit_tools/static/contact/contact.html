@@ -7,7 +7,7 @@
     </div>
     <div class="row">
         <div class="col-lg-8 col-lg-offset-2">
-            <form name="contactForm" ng-submit="submitForm(contactForm.$valid)" novalidate>
+            <form name="contactForm" ng-submit="submitForm(contactForm)" novalidate>
                 <div class="row control-group">
                     <div class="form-group col-xs-12 floating-label-form-group controls" ng-class="{ 'has-error' : contactForm.name.$invalid && !contactForm.name.$pristine }">
                         <label>Name</label>
@@ -25,16 +25,21 @@
                 <div class="row control-group">
                     <div class="form-group col-xs-12 floating-label-form-group controls" ng-class="{ 'has-error' : contactForm.message.$invalid && !contactForm.message.$pristine }">
                         <label>Message</label>
-                        <textarea rows="5" class="form-control" placeholder="Message" name="message" ng-model='contact.message' ng-minlength='5' ng-maxlength='500' required></textarea>
-                        <p ng-show="contactForm.message.$error.minlength" class="help-block text-danger">Message must have at least 5 characters.</p>
+                        <textarea rows="5" class="form-control" placeholder="Message" name="message" ng-model='contact.message' ng-maxlength='500' required></textarea>
                         <p ng-show="contactForm.message.$error.maxlength" class="help-block text-danger">Message cannot have more than 500 characters</p>
                     </div>
                 </div>
                 <br>
                 <div id="success"></div>
                 <div class="row">
-                    <div class="form-group col-xs-12">
+                    <div class="form-group col-xs-12 col-sm-4">
                         <button type="submit" class="btn btn-success btn-lg" ng-disabled="contactForm.$invalid">Send</button>
+                    </div>
+                    <div class="alert alert-success col-xs-12 col-sm-8" ng-show='successMessage'>
+                        <strong>Success! </strong> {{successMessage}}
+                    </div>
+                    <div class="alert alert-danger col-xs-12 col-sm-8" ng-show='errorMessage'>
+                        <strong>Error: </strong> {{errorMessage}}
                     </div>
                 </div>
             </form>
