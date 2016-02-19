@@ -14,6 +14,7 @@ angular.module('uoit-tools')
     $scope.roomFind = function() {
         $scope.rooms = null;
         $scope.error = null;
+        $('#roomFinderSubmit').prop('disabled', true);
         $http({
             url: '/roomfinder',
             method: 'GET',
@@ -22,6 +23,8 @@ angular.module('uoit-tools')
             $scope.rooms = result.data.rooms;
         }).catch(function(error) {
             $scope.error = 'Unable to contact server, try again later.';
+        }).then(function() {
+            $('#roomFinderSubmit').prop('disabled', false);
         });
     }
 
