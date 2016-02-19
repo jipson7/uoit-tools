@@ -56,8 +56,7 @@ def expandSchedules(schedules, course, days):
 @scheduler.route('/semesters', methods=['GET'])
 def get_available_semesters():
     semesters = {
-        'January (Winter) 2016': '201601',
-        'September (Fall) 2015': '201509'
+        'January (Winter) 2016': '201601'
     }
     data = {
         'semesters': semesters,
