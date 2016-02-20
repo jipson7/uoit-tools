@@ -20,7 +20,12 @@ angular.module('uoit-tools')
             method: 'GET',
             params :{ 'date': $('#roomfinder-datetime').data('date') }
         }).then(function(result) {
-            $scope.rooms = result.data.rooms;
+            var rooms = result.data.rooms;
+            if (rooms.length === 0) {
+                $scope.error = 'No data available for this date, try a date in the current semester.';
+            } else {
+                $scope.rooms = rooms;
+            }
         }).catch(function(error) {
             $scope.error = 'Unable to contact server, try again later.';
         }).then(function() {
